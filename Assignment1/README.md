@@ -11,8 +11,8 @@ The public shared value A for the Diffie-Hellman key change is given by g^a (mod
 ## In order to perform the Diffie-Hellman key exchange, you should do the following:
 
 1. Generate a random 1023-bit integer; this will be your secret value b.
-2. Generate your public shared value B given by gb (mod p)
-3. Calculate the shared secret s given by Ab (mod p)
+2. Generate your public shared value B given by g^b (mod p)
+3. Calculate the shared secret s given by A^b (mod p)
 
 You can use the shared secret s for your AES encryption. However, it is too large (1024 bits) to be used directly as the AES key. You should therefore use SHA-256 to produce a 256-bit digest from the shared secret s, giving a 256-bit AES key k.
 You will then encrypt an input binary file using AES in CBC mode with the 256-bit key k and a block size of 128-bits. 
