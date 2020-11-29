@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.math.BigInteger;
  
 public class GCD
 {
@@ -6,18 +7,27 @@ public class GCD
     public static void main(String[] args)
     {
         Scanner in = new Scanner(System.in);
-        int a = in.nextInt();
-        int b = in.nextInt();
+        
+        System.out.println("Enter two numbers: ");
 
-        int result = gcd(a,b);
-        System.out.println(result);
+        // input a, x and n only
+        BigInteger a = new BigInteger(in.next());
+        BigInteger b = new BigInteger(in.next());
+
+        BigInteger result = gcd(a,b);
+        System.out.println("GCD = " + result);
+        
         in.close();
     }
-    public static int gcd(int a, int b){
-
-        if(b == 0){
-            return a;
-        }
-        return gcd(b, a % b);
+    // get the greatest common divisor
+    private static BigInteger gcd(BigInteger a, BigInteger b){
+        
+        // While the number is positive.                            Example: gcd(24,36)
+        while(b.compareTo(BigInteger.ZERO) > 0){  // -------------------------------------------------
+            BigInteger tmp = a.mod(b);            // | loop 1:       | loop 2:       | loop 3:       |
+            a = b;                                // | tmp = 24 % 36 | tmp = 36 % 24 | tmp = 24 % 12 |
+            b = tmp;                              // | a = 36        | a = 24        | phi = 12      |
+        }                                         // | b = 24        | b = 12        | e = 0         |
+        return a;                                 // -------------------------------------------------
     }
 }
