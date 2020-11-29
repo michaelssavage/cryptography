@@ -19,7 +19,7 @@ public class ModInv {
         
     }
     // Extended Euclidean Algorithm where e(x) + n(y) = 1
-    private static BigInteger modInv(BigInteger e, BigInteger n) {
+    private static BigInteger ModularInverse(BigInteger e, BigInteger n) {
 		
 		// Set up all initial values.                               Example: 5^-1 mod 11
 		BigInteger n0 = n;                                          // n0 = 11
