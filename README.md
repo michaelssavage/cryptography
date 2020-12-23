@@ -81,6 +81,15 @@ For example, 67^-1 mod 119 = 93
 
 ---
 
+### Rabin Encryption
+
+This function will find the ciphertext c where m^2 (mod n)
+To find the possible square root answers for the rabin decryption, use ModularSquareRoots.java
+
+![Rabin Encryption](img/rabin.jpg)
+
+--- 
+
 ## RSA Ecryption
 
 The first published method for implementing public key cryptography was by Ron Rivest, Adi Shamir and Leonard Adleman, all then at MIT: “A Method for Obtaining Digital Signatures and Public-Key Cryptosystems”. The algorithm came to be known as RSA from their initials. It turns out that this method had also been previously discovered at GCHQ by Clifford Cocks.
