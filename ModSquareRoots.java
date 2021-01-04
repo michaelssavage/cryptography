@@ -1,4 +1,5 @@
 import java.math.BigInteger;
+import java.util.Scanner;
 
 public class ModSquareRoots {
 
@@ -6,39 +7,63 @@ public class ModSquareRoots {
     public static final BigInteger four = BigInteger.valueOf(4);
     public static final BigInteger five = BigInteger.valueOf(5);
     public static final BigInteger eight = BigInteger.valueOf(8);
+    // Example: 4 mod 77 would be 4 11 7
+    // Example = 3 59 because 59 is already a prime number and has no prime factors.
+    // Example 3 11 13 instead of 3 143 because 143 is not prime but has prime factors.
+    
+    public static void main(String[] args) {
+        BigInteger power;
+        BigInteger pRoot;
+        BigInteger qRoot;
 
-    public static void main(String[] args)
-    {
-        // example = 3 59
-        // 59 is already a prime number
-        if(args.length == 2){
-            BigInteger a = new BigInteger(args[0]);
-            BigInteger n = new BigInteger(args[1]);
+        Scanner in = new Scanner(System.in);
+        System.out.print("Example inputs include '3 59' or '3 11 13'" +
+        "\nEnter 'n' to use 1 modulo or 'pq' to use 2 modulo: "); 
+        String path = in.next();
+        if(path.equals("n")){
 
-            BigInteger[] roots = roots(a, n);
-            System.out.println("The square roots of " + a + "(mod " + n + ") = " 
-            + roots[0] + ", " + roots[1]);
-            }
+            System.out.print("Input a and n: ");
+            BigInteger a = new BigInteger(in.next());
+            BigInteger n = new BigInteger(in.next());
 
-        //example 3 11 13 
-        // because SQRT(3) mod 143
-        if(args.length == 3){
-            BigInteger a = new BigInteger(args[0]);
-            BigInteger p = new BigInteger(args[1]);
-            BigInteger q = new BigInteger(args[2]);
+            System.out.println("Is p = 3 (mod 4) or p = 5 (mod 8) ?");
 
-            BigInteger pRoot;
-            BigInteger qRoot;
+            if(n.mod(four).equals(three)){
+                power = mod4power(n);
+                BigInteger root1 = mod4(a, power, n);
+                BigInteger root2 = mod4(a.negate(), power, n);
+                System.out.println("The square roots of " + a + "(mod " + n + ") = " 
+                + root1 + ", " + root2);
+                }
+            else if (n.mod(eight).equals(five)){
+                power = mod8power(n);
+                BigInteger root1 = mod4(a, power, n);
+                BigInteger root2 = mod4(a.negate(), power, n);
+                System.out.println("The square roots of " + a + "(mod " + n + ") = " 
+                + root1 + ", " + root2);
+                }
+            else { System.out.println("Error: N is not a prime number. Does N have two prime factors instead?"); }
+        }
+        else if(path.equals("pq")){
+
+            System.out.print("Input a, p, and q: ");
+            BigInteger a = new BigInteger(in.next());
+            BigInteger p = new BigInteger(in.next());
+            BigInteger q = new BigInteger(in.next());
 
             if(p.mod(four).equals(three)){
-                pRoot = mod4(a, p);
+                power = mod4power(p);
+                pRoot = mod4(a, power, p);
             } else {
-                pRoot = mod8(a,p);
+                power = mod8power(p);
+                pRoot = mod8(a, power, p);
             }
             if(q.mod(four).equals(three)){
-                qRoot = mod4(a, q);
+                power = mod4power(q);
+                qRoot = mod4(a, power, q);
             } else {
-                qRoot = mod8(a,q);
+                power = mod8power(q);
+                qRoot = mod8(a, power, q);
             }
                 
             System.out.println("+-" + pRoot + "(mod " + p + "), " + "+-" + qRoot + "(mod "+ q + ")"
@@ -58,25 +83,17 @@ public class ModSquareRoots {
 
             System.out.println("\nThe square roots = " + r1 + ", " + r2 + ", " + r3 + ", " + r4 + "\n");
             }
-        }
-    public static BigInteger[] roots(BigInteger a, BigInteger p) {
-        
-        BigInteger power = (p.add(BigInteger.ONE)).divide(four);
+        else { System.out.println("Error: Input 'n' or 'pq' to continue."); }
 
-        System.out.println("----------------------\n|      |  a   |  y   |\n----------------------");
-        BigInteger pos = ModExpo.modExp(a, power, p);
-        System.out.println("----------------------\n");
-        System.out.println("----------------------\n|      |  a   |  y   |\n----------------------");
-        BigInteger neg = ModExpo.modExp(a.negate(), power, p);
-        System.out.println("----------------------\n");
-
-        return new BigInteger[] {pos, neg};
+        in.close();
     }
+    // The power will be (n+1)/4
+    public static BigInteger mod4power(BigInteger n){
+        return (n.add(BigInteger.ONE)).divide(four); }
 
-    public static BigInteger mod4(BigInteger a, BigInteger p) {
+    public static BigInteger mod4(BigInteger a, BigInteger power, BigInteger p) {
         
-        BigInteger power = (p.add(BigInteger.ONE)).divide(four);
-
+        System.out.println("Modular exponentiation of +-" + a + "^" + power + " mod " + p);
         System.out.println("\nFind the result from 3 (mod 4) path"
         +"\n----------------------\n|      |  a   |  y   |\n----------------------");
         BigInteger result = ModExpo.modExp(a, power, p);
@@ -85,9 +102,12 @@ public class ModSquareRoots {
         return result;
     }
 
-    public static BigInteger mod8(BigInteger a, BigInteger p) {
+    // The power will be (n-1)/4
+    public static BigInteger mod8power(BigInteger n){
+        return (n.subtract(BigInteger.ONE)).divide(four); }
 
-        BigInteger power = (p.subtract(BigInteger.ONE)).divide(four);
+    public static BigInteger mod8(BigInteger a, BigInteger power, BigInteger p) {
+
         System.out.println("Find if result is 1 or -1"
         +"\n----------------------\n|      |  a   |  y   |\n----------------------");
         BigInteger result = ModExpo.modExp(a, power, p);
@@ -143,5 +163,3 @@ public class ModSquareRoots {
         return q.multiply(n).add(b);
     }
 }
-
-// Example: 4 mod 77
