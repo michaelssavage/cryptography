@@ -6,7 +6,7 @@ public class ElGamalEncrypt {
     {
         Scanner in = new Scanner(System.in);
 
-        System.out.print("\nEnter 'e'for encryption, 'd' for decryption, or 's' for signature: "); // example encrypt m = 2
+        System.out.print("\nEnter 'e' for encryption, 'd' for decryption, or 's' for signature: "); // example encrypt m = 2
         String path = in.next();
         if(path.equals("e")){
         
@@ -58,16 +58,21 @@ public class ElGamalEncrypt {
             System.out.println("decrypted message = " + message);
         }
         else if(path.equals("s")){
-            System.out.print("\nInput values g, k, m, x, and p: ");           // example: 3 7 29
+            System.out.print("\nInput values p, g, and x: ");           // example: 3 7 29
+            BigInteger p = new BigInteger(in.next());
             BigInteger g = new BigInteger(in.next());
+            BigInteger x = new BigInteger(in.next());
+
+            BigInteger y = ModExpo.modExpNoPrint(g, x, p);
+            
+            System.out.print("y = " + y
+            +"\nEnter the values k and h(m): ");
             BigInteger k = new BigInteger(in.next());
             BigInteger m = new BigInteger(in.next());
-            BigInteger x = new BigInteger(in.next());
-            BigInteger p = new BigInteger(in.next());
 
             BigInteger s1 = ModExpo.modExpNoPrint(g, k, p);
             BigInteger temp = ModInv.modInvNoPrint(k, p.subtract(BigInteger.ONE));
-            BigInteger message = m.subtract(x.multiply(s1));
+            BigInteger message = m.subtract(x.multiply(s1)).mod(p.subtract(BigInteger.ONE));
             BigInteger s2 = temp.multiply(message).mod(p.subtract(BigInteger.ONE));
 
             System.out.println("Signed message = " + s1 + "||" + s2);
