@@ -10,11 +10,11 @@ public class ModSquareRoots {
     // Example: 4 mod 77 would be 4 11 7
     // Example = 3 59 because 59 is already a prime number and has no prime factors.
     // Example 3 11 13 instead of 3 143 because 143 is not prime but has prime factors.
-    
+
     public static void main(String[] args) {
         BigInteger power;
-        BigInteger pRoot;
-        BigInteger qRoot;
+        BigInteger root1;
+        BigInteger root2;
 
         Scanner in = new Scanner(System.in);
         System.out.print("Example inputs include '3 59' or '3 11 13'" +
@@ -30,15 +30,15 @@ public class ModSquareRoots {
 
             if(n.mod(four).equals(three)){
                 power = mod4power(n);
-                BigInteger root1 = mod4(a, power, n);
-                BigInteger root2 = mod4(a.negate(), power, n);
+                root1 = mod4(a, power, n);
+                root2 = mod4(a.negate(), power, n);
                 System.out.println("The square roots of " + a + "(mod " + n + ") = " 
                 + root1 + ", " + root2);
                 }
             else if (n.mod(eight).equals(five)){
                 power = mod8power(n);
-                BigInteger root1 = mod4(a, power, n);
-                BigInteger root2 = mod4(a.negate(), power, n);
+                root1 = mod4(a, power, n);
+                root2 = mod4(a.negate(), power, n);
                 System.out.println("The square roots of " + a + "(mod " + n + ") = " 
                 + root1 + ", " + root2);
                 }
@@ -53,33 +53,33 @@ public class ModSquareRoots {
 
             if(p.mod(four).equals(three)){
                 power = mod4power(p);
-                pRoot = mod4(a, power, p);
+                root1 = mod4(a, power, p);
             } else {
                 power = mod8power(p);
-                pRoot = mod8(a, power, p);
+                root1 = mod8(a, power, p);
             }
             if(q.mod(four).equals(three)){
                 power = mod4power(q);
-                qRoot = mod4(a, power, q);
+                root2 = mod4(a, power, q);
             } else {
                 power = mod8power(q);
-                qRoot = mod8(a, power, q);
+                root2 = mod8(a, power, q);
             }
                 
-            System.out.println("+-" + pRoot + "(mod " + p + "), " + "+-" + qRoot + "(mod "+ q + ")"
+            System.out.println("+-" + root1 + "(mod " + p + "), " + "+-" + root2 + "(mod "+ q + ")"
             +"\n=======================================");
 
             System.out.println("\nroot 1:");
-            BigInteger r1 = squareResults(pRoot, qRoot, p, q);
+            BigInteger r1 = squareResults(root1, root2, p, q);
 
             System.out.println("\nroot 2:");
-            BigInteger r2 =  squareResults(pRoot, qRoot.negate(), p, q);
+            BigInteger r2 =  squareResults(root1, root2.negate(), p, q);
 
             System.out.println("\nroot 3:");
-            BigInteger r3 =  squareResults(pRoot.negate(), qRoot, p, q);
+            BigInteger r3 =  squareResults(root1.negate(), root2, p, q);
 
             System.out.println("\nroot 4:");
-            BigInteger r4 =  squareResults(pRoot.negate(), qRoot.negate(), p, q);
+            BigInteger r4 =  squareResults(root1.negate(), root2.negate(), p, q);
 
             System.out.println("\nThe square roots = " + r1 + ", " + r2 + ", " + r3 + ", " + r4 + "\n");
             }
