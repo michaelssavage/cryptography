@@ -8,8 +8,11 @@ public class ModSquareRoots {
     public static final BigInteger five = BigInteger.valueOf(5);
     public static final BigInteger eight = BigInteger.valueOf(8);
     // Example: 4 mod 77 would be 4 11 7
-    // Example = 3 59 because 59 is already a prime number and has no prime factors.
-    // Example 3 11 13 instead of 3 143 because 143 is not prime but has prime factors.
+    // Example: 3 59 because 59 is already a prime number and has no prime factors.
+    // Example: 3 11 13 instead of 3 143 because 143 is not prime but has prime factors.
+    // 3 (mod 83) = 70, 13
+    // 58 (mod 101) = 19,82
+    // 3 (mod 11) = 5,6
 
     public static void main(String[] args) {
         BigInteger power;
@@ -17,6 +20,8 @@ public class ModSquareRoots {
         BigInteger root2;
 
         Scanner in = new Scanner(System.in);
+        System.out.print("\033[H\033[2J");  
+        System.out.flush();
         System.out.print("Example inputs include '3 59' or '3 11 13'" +
         "\nEnter 'n' to use 1 modulo or 'pq' to use 2 modulo: "); 
         String path = in.next();
@@ -26,23 +31,30 @@ public class ModSquareRoots {
             BigInteger a = new BigInteger(in.next());
             BigInteger n = new BigInteger(in.next());
 
-            System.out.println("Is p = 3 (mod 4) or p = 5 (mod 8) ?");
+            System.out.println("\nIs p = 3 (mod 4) or p = 5 (mod 8) ?");
 
             if(n.mod(four).equals(three)){
                 power = mod4power(n);
                 root1 = mod4(a, power, n);
                 root2 = mod4(a.negate(), power, n);
-                System.out.println("The square roots of " + a + "(mod " + n + ") = " 
+
+                System.out.println("The square roots of " + a + " (mod " + n + ") = " 
                 + root1 + ", " + root2);
-                }
+            }
             else if (n.mod(eight).equals(five)){
                 power = mod8power(n);
-                root1 = mod4(a, power, n);
-                root2 = mod4(a.negate(), power, n);
-                System.out.println("The square roots of " + a + "(mod " + n + ") = " 
-                + root1 + ", " + root2);
-                }
-            else { System.out.println("Error: N is not a prime number. Does N have two prime factors instead?"); }
+                BigInteger symbol = legendreSymbol(a, power, n); //check if 1 or -1.
+                root1 = mod8(a, n, symbol);
+                root2 = mod8(a.negate(), n, symbol);
+
+                System.out.println("The square roots of " + a + " (mod " + n + ") = " 
+                    + root1 + ", " + root2);
+            } 
+            else if (n.mod(eight).equals(BigInteger.ONE) || n.mod(four).equals(BigInteger.ONE)){
+                System.out.println(n + " = 1 (mod 8) or " + n + " = 1 (mod 4) is not covered.");
+            }
+            else { System.out.println("Error: Does N have two prime factors instead?"); 
+            }
         }
         else if(path.equals("pq")){
 
@@ -56,14 +68,16 @@ public class ModSquareRoots {
                 root1 = mod4(a, power, p);
             } else {
                 power = mod8power(p);
-                root1 = mod8(a, power, p);
+                BigInteger symbol = legendreSymbol(a, power, p); //check if 1 or -1.
+                root1 = mod8(a, p, symbol);
             }
             if(q.mod(four).equals(three)){
                 power = mod4power(q);
                 root2 = mod4(a, power, q);
             } else {
                 power = mod8power(q);
-                root2 = mod8(a, power, q);
+                BigInteger symbol = legendreSymbol(a, power, q); //check if 1 or -1.
+                root2 = mod8(a, q, symbol);
             }
                 
             System.out.println("+-" + root1 + "(mod " + p + "), " + "+-" + root2 + "(mod "+ q + ")"
@@ -89,40 +103,47 @@ public class ModSquareRoots {
     }
     // The power will be (n+1)/4
     public static BigInteger mod4power(BigInteger n){
-        return (n.add(BigInteger.ONE)).divide(four); }
+        System.out.println(n + " = 3 (mod 4) so power = (n+1) /4");
+        return (n.add(BigInteger.ONE)).divide(four); 
+    }
 
     public static BigInteger mod4(BigInteger a, BigInteger power, BigInteger p) {
         
-        System.out.println("Modular exponentiation of +-" + a + "^" + power + " mod " + p);
-        System.out.println("\nFind the result from 3 (mod 4) path"
+        System.out.println("Modular exponentiation of " + a + "^" + power + " mod " + p
         +"\n----------------------\n|      |  a   |  y   |\n----------------------");
         BigInteger result = ModExpo.modExp(a, power, p);
         System.out.println("----------------------\n");
 
         return result;
     }
-
     // The power will be (n-1)/4
     public static BigInteger mod8power(BigInteger n){
-        return (n.subtract(BigInteger.ONE)).divide(four); }
 
-    public static BigInteger mod8(BigInteger a, BigInteger power, BigInteger p) {
+        System.out.println(n + " = 5 (mod 8) so power = (n-1) /4");
+        return (n.subtract(BigInteger.ONE)).divide(four); 
+    }
 
-        System.out.println("Find if result is 1 or -1"
+    public static BigInteger legendreSymbol(BigInteger a, BigInteger power, BigInteger p) {
+        System.out.println("\nFind if result is 1 or -1"
         +"\n----------------------\n|      |  a   |  y   |\n----------------------");
         BigInteger result = ModExpo.modExp(a, power, p);
         System.out.println("----------------------\n");
+        return result;
+    }
 
-        if(result.equals(BigInteger.ONE)){
+    public static BigInteger mod8(BigInteger a, BigInteger p, BigInteger symbol) {
+
+        BigInteger result;
+        if(symbol.equals(BigInteger.ONE)){
             System.out.println("The result = 1 so use the power (p+3)/8");
-            power = p.add(three).divide(eight);
+            BigInteger power = p.add(three).divide(eight);
             System.out.println("----------------------\n|      |  a   |  y   |\n----------------------");
             result = ModExpo.modExp(a, power, p);
             System.out.println("----------------------\n");
 
         } else {
             System.out.println("The result = -1 so use the power (p-5)/8");
-            power = p.subtract(five).divide(eight);
+            BigInteger power = p.subtract(five).divide(eight);
             System.out.println("----------------------\n|      |  a   |  y   |\n----------------------");
             BigInteger temp = ModExpo.modExp(a.multiply(BigInteger.valueOf(2)), BigInteger.ONE, p);
             BigInteger temp1 = ModExpo.modExp(a.multiply(four), power, p);
