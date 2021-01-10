@@ -1,0 +1,5 @@
+# Assignment 1
+
+Padding is not implemented correctly - byte value 1 rather than bit value 1 is used. Digest uses character values of shared secret rather than byte values.
+
+9% / 15%
